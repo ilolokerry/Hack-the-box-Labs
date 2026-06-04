@@ -1,4 +1,4 @@
-# HTB SOC Analyst Lab — Analysis of Insight Nexus Breach
+# HTB SOC Analyst Lab — Analysis of Insight Nexus Breach part one
 
 ## Scenario
 
@@ -32,7 +32,10 @@ The incident went undetected for several days due to alert fatigue. It was first
 - TheHive for case management with Cortex available for enrichment
 
 <!-- Add network diagram image here -->
-![Network Diagram](./network_diagram.png)
+![Network Diagram](https://github.com/ilolokerry/Hack-the-box-Labs/blob/71c9d122b54cfca1cf2140b594b3d80d49283f5d/Incident%20Handling%20Process%20/media/insights.png)
+![Network Diagram](https://github.com/ilolokerry/Hack-the-box-Labs/blob/71c9d122b54cfca1cf2140b594b3d80d49283f5d/Incident%20Handling%20Process%20/media/insights6.png)
+![Network Diagram](https://github.com/ilolokerry/Hack-the-box-Labs/blob/71c9d122b54cfca1cf2140b594b3d80d49283f5d/Incident%20Handling%20Process%20/media/insights5.png)
+
 
 ---
 
