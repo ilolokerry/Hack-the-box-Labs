@@ -45,18 +45,13 @@ Alerts linked to the case:
 ### Alert Notes — Netstat Finding (Task 3)
 
 The following `netstat -ano` output was captured on `VICTIM-HOST-01` (IP: `10.10.5.23`) at approximately 15:42:35 after the host rejoined the domain. Despite recovery, the host was still communicating with external IPs.
-Proto  Local Address          Foreign Address        State           PID
-TCP    127.0.0.1:5357         0.0.0.0:0              LISTENING       928
-TCP    10.10.5.23:139         0.0.0.0:0              LISTENING       4
-TCP    10.10.5.23:52344       198.51.100.24:443      ESTABLISHED     5420
-TCP    10.10.5.23:52345       203.0.113.18:4444      ESTABLISHED     1340
-UDP    10.10.5.23:123         :                                    1320
-TCP    10.10.5.23:49678       10.10.5.17:445         ESTABLISHED     5420
-TCP    10.10.5.23:49679       10.10.5.18:445         TIME_WAIT       5420
+
+![comment](https://github.com/ilolokerry/Hack-the-box-Labs/blob/4494ec31a87ca0fce378522782427606cd70d2e1/Incident%20Handling%20Process%20/media/netcat.png)
 
 **Key findings from netstat:**
-- PID `5420` maintains an ESTABLISHED connection to `198[.]51[.]100[.]24:443` — the malware delivery server
-- PID `1340` maintains an ESTABLISHED connection to `203[.]0[.]113[.]18:4444` — confirmed C2 server communicating over a non-standard port
+
+- PID `5420` maintains an ESTABLISHED connection to `198[.]51[.]100[.]24:443` — the malware delivery server <br>
+- PID `1340` maintains an ESTABLISHED connection to `203[.]0[.]113[.]18:4444` — confirmed C2 server communicating over a non-standard port <br>
 - PID `5420` also connecting internally to port 445 on two hosts — indicating active SMB lateral movement
 - The host rejoined the domain but the malware persisted and continued beaconing, confirming the persistence mechanism was not fully cleaned
 
@@ -67,7 +62,7 @@ TCP    10.10.5.23:49679       10.10.5.18:445         TIME_WAIT       5420
 | `198[.]51[.]100[.]24` | Malware delivery server | Yes — active HTTPS connection post-recovery |
 | `203[.]0[.]113[.]18` | C2 server | Yes — active connection on port 4444 post-recovery |
 
-![comment](https://github.com/ilolokerry/Hack-the-box-Labs/blob/4494ec31a87ca0fce378522782427606cd70d2e1/Incident%20Handling%20Process%20/media/netcat.png)
+
 ---
 
 ## Task 3 — Log Analysis & IOC Extraction
