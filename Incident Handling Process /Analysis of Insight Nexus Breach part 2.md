@@ -23,6 +23,8 @@ Alerts linked to the case:
 - Set priority to **Critical** due to confirmed credential dumping and C2 activity
 - Merged alert `INX-ALERT-2025-00077` (ManageEngine admin login) into the Mimikatz alert case as both were linked to the same attacker IP `103[.]112[.]60[.]117`
 
+![cas](https://github.com/ilolokerry/Hack-the-box-Labs/blob/4494ec31a87ca0fce378522782427606cd70d2e1/Incident%20Handling%20Process%20/media/case.png)
+![full](https://github.com/ilolokerry/Hack-the-box-Labs/blob/4494ec31a87ca0fce378522782427606cd70d2e1/Incident%20Handling%20Process%20/media/full.png)
 ---
 
 ## Task 2 — Triage, Enrichment & Correlation
@@ -64,6 +66,7 @@ TCP    10.10.5.23:49679       10.10.5.18:445         TIME_WAIT       5420
 | `198[.]51[.]100[.]24` | Malware delivery server | Yes — active HTTPS connection post-recovery |
 | `203[.]0[.]113[.]18` | C2 server | Yes — active connection on port 4444 post-recovery |
 
+![comment](https://github.com/ilolokerry/Hack-the-box-Labs/blob/4494ec31a87ca0fce378522782427606cd70d2e1/Incident%20Handling%20Process%20/media/netcat.png)
 ---
 
 ## Task 3 — Log Analysis & IOC Extraction
@@ -172,5 +175,18 @@ A third alert was linked to the case: **"Suspicious process loaded VaultCli.dll 
 | Command & Control | Malware delivery from `198[.]51[.]100[.]24` | Ingress Tool Transfer | T1105 |
 
 ---
+## Recommendations
+
+- Enforce MFA for user and administrative accounts.
+- Monitor for suspicious PowerShell execution and credential dumping activity.
+- Block identified malicious IPs, URLs, and IOCs.
+- Review mailbox forwarding rules and external email activity.
+- Regularly patch systems and security applications.
+
+## Lessons Learned
+
+- Correlating multiple alerts provides better visibility into attacker activity.
+- PowerShell and credential dumping tools remain common attack techniques.
+- Continuous monitoring helps identify persistence and C2 communications after initial compromise.
 
 *Completed as part of the Hack The Box SOC Analyst learning path.*
