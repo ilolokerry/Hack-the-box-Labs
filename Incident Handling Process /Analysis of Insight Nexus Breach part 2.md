@@ -1,4 +1,4 @@
-# HTB SOC Analyst Lab — Insight Nexus: Alert Triage & Kill Chain Mapping
+# HTB SOC Analyst Lab — Analysis of Insight Nexus Breach part two
 
 ## Overview
 
