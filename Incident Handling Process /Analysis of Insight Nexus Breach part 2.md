@@ -23,6 +23,7 @@ Alerts linked to the case:
 - Set priority to **Critical** due to confirmed credential dumping and C2 activity
 - Merged alert `INX-ALERT-2025-00077` (ManageEngine admin login) into the Mimikatz alert case as both were linked to the same attacker IP `103[.]112[.]60[.]117`
 
+![alert](https://github.com/ilolokerry/Hack-the-box-Labs/blob/b0728e26bbb56395dac2d1156acb346473e19144/Incident%20Handling%20Process%20/media/alerts.png)
 ![cas](https://github.com/ilolokerry/Hack-the-box-Labs/blob/4494ec31a87ca0fce378522782427606cd70d2e1/Incident%20Handling%20Process%20/media/case.png)
 ![full](https://github.com/ilolokerry/Hack-the-box-Labs/blob/4494ec31a87ca0fce378522782427606cd70d2e1/Incident%20Handling%20Process%20/media/full.png)
 ---
