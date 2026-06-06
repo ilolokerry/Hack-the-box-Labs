@@ -43,6 +43,9 @@ This repository documents my completion of the Security Monitoring & SIEM Fundam
 - KQL (Kibana Query Language)
 - Windows Event Logs
 
+![kibana](https://github.com/ilolokerry/Hack-the-box-Labs/blob/5d29a040435ef4c2be48ab71f79bec670b6db571/Security%20Monitoring%20with%20Elastic%20stk/images/elastic.png)
+![beats](https://github.com/ilolokerry/Hack-the-box-Labs/blob/5d29a040435ef4c2be48ab71f79bec670b6db571/Security%20Monitoring%20with%20Elastic%20stk/images/beats1.png)
+![discover](https://github.com/ilolokerry/Hack-the-box-Labs/blob/5d29a040435ef4c2be48ab71f79bec670b6db571/Security%20Monitoring%20with%20Elastic%20stk/images/discover.png)
 ---
 
 *Completed as part of the Hack The Box Academy SOC Analyst learning path.*
