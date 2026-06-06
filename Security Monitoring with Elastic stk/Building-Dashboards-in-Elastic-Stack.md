@@ -32,8 +32,8 @@ NOT user.name: *$ AND winlog.channel.keyword: Security
 | Logon Type | `winlog.logon.type.keyword` |
 | # of Logins | Count of records |
 
-<!-- Add screenshot here -->
-![Dashboard 1](./screenshots/dashboard1_failed_logons.png)
+![PRE FAIL](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/all%20useres%20%20pre.png)
+![FAIL](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/all%20useres%20final.png)
 
 ---
 
@@ -56,8 +56,8 @@ NOT user.name: *$ AND winlog.channel.keyword: Security
 | Event Logged By | `host.hostname.keyword` |
 | # of Logins | Count of records |
 
-<!-- Add screenshot here -->
-![Dashboard 2](./screenshots/dashboard2_disabled_users.png)
+![pre disable](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/disabled%20pre.png)
+![disable](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/disabled%20home.png)
 
 ---
 
@@ -86,9 +86,8 @@ user.name: svc-*
 | Source IP | `related.ip.keyword` |
 | # of Logins | Count of records |
 
-<!-- Add screenshot here -->
-![Dashboard 3](./screenshots/dashboard3_svc_rdp.png)
-
+![pre rdp](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/rdp%20pre.png)
+![rdp](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/rdp%20home.png)
 ---
 
 ## Dashboard 4 — Users Added or Removed from Local Administrators Group
@@ -115,15 +114,9 @@ user.name: svc-*
 | Host | `host.name.keyword` |
 | Count | Count of records |
 
-<!-- Add screenshot here -->
-![Dashboard 4](./screenshots/dashboard4_admin_group.png)
-
----
-
-## Full SOC-Alerts Dashboard
-
-<!-- Add full dashboard screenshot here -->
-![Full Dashboard](./screenshots/full_dashboard.png)
+![preone](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/add%20preone.png)
+![pretwo](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/add%20pre%20tow.png)
+![final](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/add%20home.png)
 
 ---
 
