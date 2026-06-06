@@ -81,9 +81,9 @@ user.name: svc-*
 
 | Column | Field |
 |---|---|
-| Username | `user.name.keyword` |
-| Event Logged By | `host.hostname.keyword` |
-| Source IP | `related.ip.keyword` |
+| User performing the change | `user.name.keyword` |
+| Connect To | `host.hostname.keyword` |
+| Connect From | `related.ip.keyword` |
 | # of Logins | Count of records |
 
 ![pre rdp](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/rdp%20pre.png)
@@ -108,10 +108,10 @@ user.name: svc-*
 | Column | Field |
 |---|---|
 | Username | `user.name.keyword` |
-| Member SID | `winlog.event_data.MemberSid.keyword` |
-| Group Name | `group.name.keyword` |
-| Action | `event.action.keyword` |
-| Host | `host.name.keyword` |
+| User added | `winlog.event_data.MemberSid.keyword` |
+| Group modidfied | `group.name.keyword` |
+| Action permmed | `event.action.keyword` |
+| Action performed on | `host.name.keyword` |
 | Count | Count of records |
 
 ![preone](https://github.com/ilolokerry/Hack-the-box-Labs/blob/ec83d641c4e02a82c608d5225bcfe8d966ca700c/Security%20Monitoring%20with%20Elastic%20stk/images/add%20preone.png)
