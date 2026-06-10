@@ -114,7 +114,7 @@ event.code:11 AND file.name:invoice.one*
 > Zone.Identifier confirms the file originated from the internet.
 
 <!-- Add screenshot here -->
-![Step 1 - invoice.one File Create Event](./screenshots/step1_file_create.png)
+![Step 1 - invoice.one File Create Event](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/invoice.png)
 
 ---
 
@@ -145,7 +145,8 @@ source.ip:192.168.28.130 AND dns.question.name:*
 **Network connections to `34[.]197[.]10[.]85`:** 5 connections over port 443 — confirms Bob successfully downloaded `invoice.one` from `file.io`.
 
 <!-- Add screenshot here -->
-![Step 2 - Zeek DNS Query Results](./screenshots/step2_zeek_dns.png)
+![Step 2 - Zeek DNS Query Results](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/mail.png)
+![Step 2 - Zeek DNS Query Results](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/file%20io.png)
 
 ---
 
@@ -165,7 +166,7 @@ event.code:1 AND process.command_line:*invoice.one*
 | File Opened | `C:\Users\bob\Downloads\invoice.one` |
 
 <!-- Add screenshot here -->
-![Step 3 - OneNote Execution](./screenshots/step3_onenote_exec.png)
+![Step 3 - OneNote Execution](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/file%20execute.png)
 
 ---
 
@@ -190,7 +191,8 @@ event.code:1 AND process.parent.name:"ONENOTE.EXE"
 > invoice.bat was embedded inside the OneNote file and extracted to a temp location on execution.
 
 <!-- Add screenshot here -->
-![Step 4 - cmd.exe spawned by OneNote](./screenshots/step4_cmd_onenote.png)
+![Step 4 - cmd.exe spawned by OneNote](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/note.png)
+![Step 4 - cmd.exe spawned by OneNote](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/note%20bat.png)
 
 ---
 
@@ -213,7 +215,7 @@ event.code:1 AND process.parent.command_line:*invoice.bat*
 > This matches the Threat Intel report — PowerShell stager downloaded from Pastebin. The `-w hidden` and `-nop` flags are classic obfuscation/evasion techniques.
 
 <!-- Add screenshot here -->
-![Step 5 - PowerShell Stager from Pastebin](./screenshots/step5_powershell_stager.png)
+![Step 5 - PowerShell Stager from Pastebin](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/stager.png)
 
 ---
 
@@ -242,7 +244,7 @@ process.pid:"9944" AND process.name:"powershell.exe"
 | `23:33:53.904` | DNS query | `DC1.eagle.local` |
 
 <!-- Add screenshot — this is the annotated screenshot you provided -->
-![Step 6 - PowerShell PID 9944 Activity](./screenshots/step6_powershell_pid9944.png)
+![Step 6 - PowerShell PID 9944 Activity](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/event.png)
 
 ---
 
@@ -255,8 +257,9 @@ process.pid:"9944" AND process.name:"powershell.exe"
 - Continued beaconing confirmed to `3[.]125[.]102[.]39:443`
 
 <!-- Add screenshot here -->
-![Step 7 - C2 Beaconing Zeek](./screenshots/step7_c2_beaconing.png)
-
+![Step 7 - C2 Beaconing Zeek](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/zeek%20one.png)
+![Step 7 - C2 Beaconing Zeek](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/ngrok.png)
+![Step 7 - C2 Beaconing Zeek](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/zek%202.png)
 ---
 
 ### Step 8 — Persistence via default.exe
