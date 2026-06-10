@@ -287,7 +287,9 @@ process.hash.sha256:018d37cbd3878258c29db3bc3f2988b6ae688843801b9abc28e6151141ab
 - Backdoor placed under `svc-sql1` profile — account likely compromised
 
 <!-- Add screenshot here -->
-![Step 8 - default.exe Activity](./screenshots/step8_default_exe.png)
+![Step 8 - default.exe Activity](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9db068684dc8da0c4fade279f1f426fcf80d0639/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/default%20one.png)
+![Step 8 - default.exe Activity](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9a1ec430b9822ea423f811996559a0528d89cc1c/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/default%20two.png)
+
 
 ---
 
@@ -303,7 +305,7 @@ process.name:"SharpHound.exe"
 - Attacker likely mapped attack paths for domain escalation
 
 <!-- Add screenshot here -->
-![Step 9 - SharpHound Execution](./screenshots/step9_sharphound.png)
+![Step 9 - SharpHound Execution](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9a1ec430b9822ea423f811996559a0528d89cc1c/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/sharp.png)
 
 ---
 
@@ -314,7 +316,7 @@ process.name:"SharpHound.exe"
 - `svc-sql1` confirmed in `user.name` field — account was used for lateral movement
 
 <!-- Add screenshot here -->
-![Step 10 - PsExec Lateral Movement to PKI](./screenshots/step10_psexec_pki.png)
+![Step 10 - PsExec Lateral Movement to PKI](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9a1ec430b9822ea423f811996559a0528d89cc1c/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/default%20two.png)
 
 ---
 
@@ -338,7 +340,7 @@ process.name:"SharpHound.exe"
 > Administrator spray failed. svc-sql1 was successfully cracked via DomainPasswordSpray.ps1 two days later.
 
 <!-- Add screenshot here -->
-![Step 11 - Password Spray Logon Events](./screenshots/step11_password_spray.png)
+![Step 11 - Password Spray Logon Events](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9a1ec430b9822ea423f811996559a0528d89cc1c/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/spray.png)
 
 ---
 
@@ -352,7 +354,8 @@ process.name:"SharpHound.exe"
 **Finding:** PowerShell code loaded into memory consistent with **PowerView** (part of the PowerSploit framework by @harmj0y). The code was scanning and enumerating network shares across the domain — a classic pre-lateral movement reconnaissance technique.
 
 <!-- Add screenshot here -->
-![Step 12 - PowerView Share Enumeration](./screenshots/step12_powerview.png)
+![Step 12 - PowerView Share Enumeration](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9a1ec430b9822ea423f811996559a0528d89cc1c/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/power%20ojen.png)
+![Step 12 - PowerView Share Enumeration](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9a1ec430b9822ea423f811996559a0528d89cc1c/Threat%20Hunting%20%26%20Hunting%20With%20Elastic/media/power%20two.png)
 
 ---
 
