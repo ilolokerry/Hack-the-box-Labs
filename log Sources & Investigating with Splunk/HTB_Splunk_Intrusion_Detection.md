@@ -100,7 +100,7 @@ Checked Linux syslog for more context:
 index="main" 10.0.0.229 sourcetype="linux:syslog"
 ```
 > Linux syslog can reveal the hostname and interface associated with an IP, helping confirm whether this is a known or unknown host.
-![two]()
+![two](https://github.com/ilolokerry/Hack-the-box-Labs/blob/492230473827a6d25ed22e296ebab128ddba811d/log%20Sources%20%26%20Investigating%20with%20Splunk/media/10%20two.png)
 
 **Finding:** IP belongs to `waldo-virtual-machine` on interface `ens160` — a Linux host likely compromised and being used as a staging server for delivering tools.
 
@@ -109,7 +109,7 @@ Checked all commands being executed referencing this IP:
 ```spl
 index="main" 10.0.0.229 sourcetype="WinEventLog:sysmon" | stats count by CommandLine
 ```
-![three]()
+![three](https://github.com/ilolokerry/Hack-the-box-Labs/blob/492230473827a6d25ed22e296ebab128ddba811d/log%20Sources%20%26%20Investigating%20with%20Splunk/media/10%20three.png)
 > Aggregating by CommandLine reveals the full picture of what was downloaded and executed from this host across the environment.
 
 **Finding:** Multiple binaries with clearly malicious names being downloaded and executed via PowerShell and PsExec64.
@@ -121,7 +121,7 @@ index="main" 10.0.0.229 sourcetype="WinEventLog:sysmon" | stats count by Command
 ```
 > Adding host to the aggregation shows which machines were impacted and whether the same commands ran on multiple hosts.
 
-![four](
+![four](https://github.com/ilolokerry/Hack-the-box-Labs/blob/492230473827a6d25ed22e296ebab128ddba811d/log%20Sources%20%26%20Investigating%20with%20Splunk/media/10%20four.png)
 
 **Finding:** Two hosts compromised — `DESKTOP-EGSS5IS` and `DESKTOP-UN7T4R8`. A DCSync PowerShell script was executed on the second host.
 
