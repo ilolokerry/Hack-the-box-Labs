@@ -62,7 +62,7 @@ Queried all parent-child process trees using Sysmon Event ID 1:
 index="main" sourcetype="WinEventLog:Sysmon" EventCode=1 | stats count by ParentImage, Image
 ```
 > Returns 5,427 results — too many to sift through manually. Narrowed down to high-risk child processes.
-|[parent](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c95a1cdd829db25c15ac8b54ac61db71d0b93695/log%20Sources%20%26%20Investigating%20with%20Splunk/media/parent.png)
+![parent](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c95a1cdd829db25c15ac8b54ac61db71d0b93695/log%20Sources%20%26%20Investigating%20with%20Splunk/media/parent.png)
 
 Narrowed to high-risk child processes:
 
@@ -81,9 +81,8 @@ index="main" sourcetype="WinEventLog:Sysmon" EventCode=1 (Image="*cmd.exe" OR Im
 
 **Finding:** `notepad.exe` (with no arguments) triggered `powershell.exe` downloading a file from `10[.]0[.]0[.]229:8080`.
 
-<!-- Add screenshot here -->
-![Notepad spawning PowerShell](./screenshots/notepad_powershell.png)
-
+![notepad](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9aec7af3c92d2b84d9007ca309ca9e4f30b13a14/log%20Sources%20%26%20Investigating%20with%20Splunk/media/nmotepad.png)
+![notepad2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9aec7af3c92d2b84d9007ca309ca9e4f30b13a14/log%20Sources%20%26%20Investigating%20with%20Splunk/media/notepad2.png)
 ---
 
 ### Pivoted on Suspicious IP `10[.]0[.]0[.]229`
@@ -94,13 +93,14 @@ Queried all sourcetypes referencing the suspicious IP:
 index="main" 10.0.0.229 | stats count by sourcetype
 ```
 > Shows which log sources have seen this IP — helps decide where to investigate next.
-
+![one](https://github.com/ilolokerry/Hack-the-box-Labs/blob/9aec7af3c92d2b84d9007ca309ca9e4f30b13a14/log%20Sources%20%26%20Investigating%20with%20Splunk/media/10%20one.png)
 Checked Linux syslog for more context:
 
 ```spl
 index="main" 10.0.0.229 sourcetype="linux:syslog"
 ```
 > Linux syslog can reveal the hostname and interface associated with an IP, helping confirm whether this is a known or unknown host.
+![two]()
 
 **Finding:** IP belongs to `waldo-virtual-machine` on interface `ens160` — a Linux host likely compromised and being used as a staging server for delivering tools.
 
@@ -109,6 +109,7 @@ Checked all commands being executed referencing this IP:
 ```spl
 index="main" 10.0.0.229 sourcetype="WinEventLog:sysmon" | stats count by CommandLine
 ```
+![three]()
 > Aggregating by CommandLine reveals the full picture of what was downloaded and executed from this host across the environment.
 
 **Finding:** Multiple binaries with clearly malicious names being downloaded and executed via PowerShell and PsExec64.
@@ -120,10 +121,9 @@ index="main" 10.0.0.229 sourcetype="WinEventLog:sysmon" | stats count by Command
 ```
 > Adding host to the aggregation shows which machines were impacted and whether the same commands ran on multiple hosts.
 
-**Finding:** Two hosts compromised — `DESKTOP-EGSS5IS` and `DESKTOP-UN7T4R8`. A DCSync PowerShell script was executed on the second host.
+![four](
 
-<!-- Add screenshot here -->
-![Suspicious CommandLines by Host](./screenshots/commandlines_by_host.png)
+**Finding:** Two hosts compromised — `DESKTOP-EGSS5IS` and `DESKTOP-UN7T4R8`. A DCSync PowerShell script was executed on the second host.
 
 ---
 
