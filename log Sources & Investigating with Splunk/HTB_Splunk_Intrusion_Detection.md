@@ -28,6 +28,7 @@ index="main" sourcetype="WinEventLog:Sysmon" | stats count by EventCode
 ```
 
 Found 20 distinct EventCodes. Reviewed each one to understand its detection value before building queries.
+
 ![sourcetype](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c95a1cdd829db25c15ac8b54ac61db71d0b93695/log%20Sources%20%26%20Investigating%20with%20Splunk/media/source%20type.png)
 ---
 
@@ -139,10 +140,12 @@ index="main" EventCode=4662 Access_Mask=0x100 Account_Name!=*$
 > - `Access_Mask=0x100` is the Control Access right specifically required for DCSync operations
 > - `Account_Name!=*$` filters out legitimate machine account replication — DCSync should only be performed by machine accounts or SYSTEM, not regular users
 
+![dsyncone](https://github.com/ilolokerry/Hack-the-box-Labs/blob/94a286767d79cf57e1e5985604e99ccd5a9bd31a/log%20Sources%20%26%20Investigating%20with%20Splunk/media/dcsynce%20one.png)
+![dsync](https://github.com/ilolokerry/Hack-the-box-Labs/blob/94a286767d79cf57e1e5985604e99ccd5a9bd31a/log%20Sources%20%26%20Investigating%20with%20Splunk/media/dcsync.png)
+![one](https://github.com/ilolokerry/Hack-the-box-Labs/blob/94a286767d79cf57e1e5985604e99ccd5a9bd31a/log%20Sources%20%26%20Investigating%20with%20Splunk/media/19.png)
+![two](https://github.com/ilolokerry/Hack-the-box-Labs/blob/94a286767d79cf57e1e5985604e99ccd5a9bd31a/log%20Sources%20%26%20Investigating%20with%20Splunk/media/21.png)
+![three](https://github.com/ilolokerry/Hack-the-box-Labs/blob/94a286767d79cf57e1e5985604e99ccd5a9bd31a/log%20Sources%20%26%20Investigating%20with%20Splunk/media/22.png)
 **Finding:** User `waldo` on the `UNIWALDO` domain accessed AD objects with GUIDs matching `DS-Replication-Get-Changes-All` — confirming a successful DCSync attack and full domain credential dump. `krbtgt` rotation recommended in case a Golden Ticket was created.
-
-<!-- Add screenshot here -->
-![DCSync Event 4662](./screenshots/dcsync_4662.png)
 
 ---
 
@@ -154,7 +157,7 @@ Queried Sysmon Event ID 10 (ProcessAccess) to find processes opening handles to 
 index="main" EventCode=10 lsass | stats count by SourceImage
 ```
 > Sorting by count helps distinguish normal frequent processes from rare suspicious ones. Low-count entries are worth investigating first.
-
+![lsaaone](https://github.com/ilolokerry/Hack-the-box-Labs/blob/94a286767d79cf57e1e5985604e99ccd5a9bd31a/log%20Sources%20%26%20Investigating%20with%20Splunk/media/lass%201.png)
 Investigated the suspicious result:
 
 ```spl
