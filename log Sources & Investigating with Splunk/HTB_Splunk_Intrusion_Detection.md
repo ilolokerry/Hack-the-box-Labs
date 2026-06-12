@@ -28,7 +28,7 @@ index="main" sourcetype="WinEventLog:Sysmon" | stats count by EventCode
 ```
 
 Found 20 distinct EventCodes. Reviewed each one to understand its detection value before building queries.
-
+![sourcetype](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c95a1cdd829db25c15ac8b54ac61db71d0b93695/log%20Sources%20%26%20Investigating%20with%20Splunk/media/source%20type.png)
 ---
 
 ### Learned Efficient Query Writing
@@ -62,6 +62,7 @@ Queried all parent-child process trees using Sysmon Event ID 1:
 index="main" sourcetype="WinEventLog:Sysmon" EventCode=1 | stats count by ParentImage, Image
 ```
 > Returns 5,427 results — too many to sift through manually. Narrowed down to high-risk child processes.
+|[parent](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c95a1cdd829db25c15ac8b54ac61db71d0b93695/log%20Sources%20%26%20Investigating%20with%20Splunk/media/parent.png)
 
 Narrowed to high-risk child processes:
 
@@ -69,6 +70,7 @@ Narrowed to high-risk child processes:
 index="main" sourcetype="WinEventLog:Sysmon" EventCode=1 (Image="*cmd.exe" OR Image="*powershell.exe") | stats count by ParentImage, Image
 ```
 > cmd.exe and powershell.exe are commonly abused by attackers. Filtering for these as child processes immediately surfaces suspicious chains.
+![cmd](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c95a1cdd829db25c15ac8b54ac61db71d0b93695/log%20Sources%20%26%20Investigating%20with%20Splunk/media/cmd%20or%20poweeshell.png)
 
 Drilled into the suspicious chain:
 
