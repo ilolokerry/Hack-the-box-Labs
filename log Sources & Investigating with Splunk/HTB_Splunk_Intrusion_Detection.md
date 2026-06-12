@@ -167,8 +167,7 @@ index="main" EventCode=10 lsass SourceImage="C:\\Windows\\System32\\notepad.exe"
 
 **Finding:** CallTrace showed API calls originating from `UNKNOWN` memory regions — shellcode executing from unbacked memory not mapped to any file on disk.
 
-<!-- Add screenshot here -->
-![LSASS Access by Notepad](./screenshots/lsass_notepad.png)
+![sas](https://github.com/ilolokerry/Hack-the-box-Labs/blob/510382367ffa661d131ba82c7a3c650466c53b7d/log%20Sources%20%26%20Investigating%20with%20Splunk/media/ssa.png)
 
 ---
 
@@ -194,11 +193,15 @@ index="main" CallTrace="*UNKNOWN*" | where SourceImage!=TargetImage | stats coun
 ```
 > A process accessing itself is generally not a concern. Removing self-access reduces noise without affecting detection of cross-process shellcode.
 
+![first](https://github.com/ilolokerry/Hack-the-box-Labs/blob/510382367ffa661d131ba82c7a3c650466c53b7d/log%20Sources%20%26%20Investigating%20with%20Splunk/media/final.png)
+
 **Step 4 — Exclude .NET JIT false positives:**
 ```spl
 index="main" CallTrace="*UNKNOWN*" SourceImage!="*Microsoft.NET*" CallTrace!=*ni.dll* CallTrace!=*clr.dll* | where SourceImage!=TargetImage | stats count by SourceImage
 ```
 > .NET is a Just-In-Time (JIT) compiler — it legitimately generates code in memory at runtime that does not map to disk. These are expected UNKNOWN entries and not malicious.
+
+![first](https://github.com/ilolokerry/Hack-the-box-Labs/blob/510382367ffa661d131ba82c7a3c650466c53b7d/log%20Sources%20%26%20Investigating%20with%20Splunk/media/final.png)
 
 **Step 5 — Exclude WOW64 (Heaven's Gate mechanism):**
 ```spl
