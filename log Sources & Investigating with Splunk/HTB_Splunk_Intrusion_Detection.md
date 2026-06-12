@@ -221,9 +221,7 @@ index="main" CallTrace="*UNKNOWN*" SourceImage!="*Microsoft.NET*" CallTrace!=*ni
 ```
 > Adding TargetImage and CallTrace to the output provides full context for each alert — showing exactly what was accessed and from where, making triage faster and more accurate.
 
-<!-- Add screenshot here -->
-![Final Alert Query Results](./screenshots/final_alert.png)
-
+![last](https://github.com/ilolokerry/Hack-the-box-Labs/blob/30f45115b184639ac31c3c6c728b7122dd9a8c98/log%20Sources%20%26%20Investigating%20with%20Splunk/media/final%202.png)
 ---
 
 ## Key Sysmon Event IDs Referenced
