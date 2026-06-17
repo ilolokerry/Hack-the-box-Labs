@@ -23,21 +23,8 @@ This intermediate-level module from Hack The Box Academy covers traffic analysis
 - Injection attacks like XSS and Command Injection, and SSL renegotiation attacks
 - Suspicious DNS activity and unusual Telnet & UDP connections
 
-## Contents
-
-This repository contains my write-ups for each section of the module, documenting the Wireshark-based traffic analysis exercises completed during the course:
-
-- [`link-layer-attacks-traffic-analysis.md`](./link-layer-attacks-traffic-analysis.md)
-- [`application-layer-attacks-traffic-analysis.md`](./application-layer-attacks-traffic-analysis.md)
-- [`detecting-network-abnormalities-traffic-analysis.md`](./detecting-network-abnormalities-traffic-analysis.md)
-
-Each report covers the filters and techniques used in Wireshark to identify the relevant attack patterns, along with any decoding steps performed on exfiltrated data.
-
 ## Tools Used
 
 - Wireshark
 - base64 (Linux CLI)
 
-## Status
-
-Module completed.
