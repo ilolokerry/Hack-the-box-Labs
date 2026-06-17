@@ -35,25 +35,7 @@ The key indicators identified were initial fragmented traffic from a fake addres
 
 [SCREENSHOT PLACEHOLDER: RST responses being routed back to the real attacker address rather than the decoy]
 
-## 3. Random Source Attack Detection
-
-**PCAP files:** `ICMP_rand_source.pcapng`, `ICMP_rand_source_larg_data.pcapng`, `TCP_rand_source_attacks.pcapng`
-
-These captures were analyzed for denial-of-service activity involving randomized source IP addresses targeting a single port/service.
-
-[SCREENSHOT PLACEHOLDER: Wireshark view of randomized source addresses targeting a single destination port]
-
-The key indicators identified were single-port utilization from many random hosts, an incremental base port lacking normal randomization, and identical packet length fields across requests, three patterns that distinguish this attack from legitimate multi-user traffic to the same port.
-
-## 4. SMURF Attack Detection
-
-This capture was analyzed for excessive ICMP reply traffic directed at a single victim host from many different source hosts, consistent with a SMURF-style distributed denial-of-service attack.
-
-[SCREENSHOT PLACEHOLDER: Wireshark view showing many distinct hosts replying via ICMP to a single victim address]
-
-The key indicator identified was an unusually high volume of ICMP replies converging on one host, sometimes combined with fragmentation, which increases the traffic volume directed at the victim.
-
-## 5. LAND Attack Detection
+## 3. LAND Attack Detection
 
 **PCAP file:** `LAND-DoS.pcapng`
 
@@ -63,7 +45,7 @@ This capture was analyzed for LAND attack behavior, where the attacker spoofs th
 
 The key indicator identified was a high volume of traffic with matching source and destination addresses, along with heavy port re-use that would make legitimate connections to the host difficult to establish.
 
-## 6. IP TTL Manipulation Detection
+## 4. IP TTL Manipulation Detection
 
 **PCAP file:** `ip_ttl.pcapng`
 
@@ -75,7 +57,7 @@ Opening the IPv4 details pane for individual packets revealed unusually low TTL 
 
 [SCREENSHOT PLACEHOLDER: IPv4 details pane showing an abnormally low TTL value]
 
-## 7. TCP Handshake Abnormalities (Scan Type Detection)
+## 5. TCP Handshake Abnormalities (Scan Type Detection)
 
 This section covered identifying different Nmap scan types based on their distinct TCP flag patterns.
 
@@ -119,7 +101,7 @@ Identified by TCP packets marked solely with the FIN flag. Open ports did not re
 
 Identified by TCP packets with all flags set at once (URG, ACK, PSH, RST, SYN, FIN), an easily recognizable and unusual pattern not seen in normal traffic.
 
-## 8. TCP Connection Reset (RST) Attack Detection
+## 6. TCP Connection Reset (RST) Attack Detection
 
 **PCAP file:** `RST_Attack.pcapng`
 
@@ -131,7 +113,7 @@ The key indicator identified was an excessive number of RST packets directed at 
 
 [SCREENSHOT PLACEHOLDER: Comparison of expected vs. observed MAC address sending the RST packets]
 
-## 9. TCP Connection Hijacking
+## 7. TCP Connection Hijacking
 
 **PCAP file:** `TCP-hijacking.pcap`
 
