@@ -77,10 +77,6 @@ Following one of these streams (Follow → HTTP Stream) revealed a CRLF-injected
 
 [SCREENSHOT PLACEHOLDER: Follow HTTP Stream showing the raw CRLF-injected request]
 
-I also checked for HTTP 200 (success) responses immediately following a 400, which would confirm that the smuggled second request succeeded.
-
-[SCREENSHOT PLACEHOLDER: HTTP 200 response following the smuggled request]
-
 ## 3. Cross-Site Scripting (XSS) and Code Injection Detection
 
 **PCAP file:** `XSS_Simple.pcapng`
