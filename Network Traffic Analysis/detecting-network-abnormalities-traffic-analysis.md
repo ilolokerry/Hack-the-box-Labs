@@ -121,7 +121,7 @@ This capture was reviewed for signs of active TCP session hijacking, where an at
 
 [SCREENSHOT PLACEHOLDER: Wireshark view showing injected packets with a spoofed source address and irregular sequence numbering]
 
-## 10. ICMP Tunneling Detection
+## 8. ICMP Tunneling Detection
 
 **PCAP file:** `icmp_tunneling.pcapng`
 
