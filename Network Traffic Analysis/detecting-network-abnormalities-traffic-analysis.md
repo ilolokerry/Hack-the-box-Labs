@@ -27,11 +27,11 @@ The key indicators identified were a high volume of fragmented IP packets and th
 
 This exercise focused on identifying decoy scanning, where an attacker spoofs a fake source address alongside their real one to mask the true origin of a scan.
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing initial fragmentation traffic from the fake/decoy address]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/IP%20Source%20%26%20Destination%20Spoofing%20Attacks/1.png)
 
 The key indicators identified were initial fragmented traffic from a fake address, followed by legitimate TCP traffic from the real attacking source address. Because RST responses for closed ports were still directed back toward the real source, the true attacker address could be unmasked despite the decoy.
 
-[SCREENSHOT PLACEHOLDER: RST responses being routed back to the real attacker address rather than the decoy]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/IP%20Source%20%26%20Destination%20Spoofing%20Attacks/2.png)
 
 ## 3. LAND Attack Detection
 
@@ -39,7 +39,7 @@ The key indicators identified were initial fragmented traffic from a fake addres
 
 This capture was analyzed for LAND attack behavior, where the attacker spoofs the source IP address to be identical to the destination IP address.
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing identical source and destination IP addresses in the same packet]
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/IP%20Source%20%26%20Destination%20Spoofing%20Attacks/1-LAND.png)
 
 The key indicator identified was a high volume of traffic with matching source and destination addresses, along with heavy port re-use that would make legitimate connections to the host difficult to establish.
 
@@ -49,11 +49,12 @@ The key indicator identified was a high volume of traffic with matching source a
 
 This exercise focused on detecting intentionally low TTL values used by an attacker to evade firewall, IDS, or IPS inspection during port scanning.
 
-[SCREENSHOT PLACEHOLDER: Wireshark view of scan traffic with a returned SYN/ACK indicating a firewall bypass]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TIME%20TO%20LIVE/1.png)
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TIME%20TO%20LIVE/2.png)
 
 Opening the IPv4 details pane for individual packets revealed unusually low TTL values (such as 1, 2, or 3), which would cause the packet to be discarded by intermediate hosts before reaching a filtering device, while still allowing the destination host to receive and respond to a portion of the traffic.
 
-[SCREENSHOT PLACEHOLDER: IPv4 details pane showing an abnormally low TTL value]
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TIME%20TO%20LIVE/3.png)
 
 ## 5. TCP Handshake Abnormalities (Scan Type Detection)
 
@@ -63,7 +64,7 @@ This section covered identifying different Nmap scan types based on their distin
 
 **PCAP file:** `nmap_syn_scan.pcapng`
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing repeated SYN packets to multiple ports from a single host]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TCP%20Handshake%20Abnormalities/1.png)
 
 Identified by a high volume of SYN packets sent to multiple ports from a single host, with the scanning host pre-emptively closing the handshake using RST once it received a SYN/ACK.
 
@@ -71,7 +72,7 @@ Identified by a high volume of SYN packets sent to multiple ports from a single 
 
 **PCAP file:** `nmap_null_scan.pcapng`
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing TCP packets with no flags set]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TCP%20Handshake%20Abnormalities/2.png)
 
 Identified by TCP packets sent with no flags at all. Open ports did not respond, while closed ports replied with RST.
 
@@ -87,7 +88,7 @@ Identified by an unusually high number of ACK packets sent without a preceding S
 
 **PCAP file:** `nmap_fin_scan.pcapng`
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing TCP packets with only the FIN flag set]
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TCP%20Handshake%20Abnormalities/3.png)
 
 Identified by TCP packets marked solely with the FIN flag. Open ports did not respond, while closed ports replied with RST.
 
@@ -95,7 +96,7 @@ Identified by TCP packets marked solely with the FIN flag. Open ports did not re
 
 **PCAP file:** `nmap_xmas_scan.pcapng`
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing TCP packets with all flags set simultaneously]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TCP%20Handshake%20Abnormalities/4.png)
 
 Identified by TCP packets with all flags set at once (URG, ACK, PSH, RST, SYN, FIN), an easily recognizable and unusual pattern not seen in normal traffic.
 
@@ -105,11 +106,9 @@ Identified by TCP packets with all flags set at once (URG, ACK, PSH, RST, SYN, F
 
 This exercise focused on identifying a TCP RST injection attack used to forcibly terminate a legitimate connection.
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing an excessive volume of RST packets directed at one port]
-
 The key indicator identified was an excessive number of RST packets directed at a port already in active use. To confirm malicious intent, I cross-referenced the physical (MAC) address sending the RST packets against the known MAC address registered to that IP in the network's device list; a mismatch confirmed the RST packets were not coming from the legitimate host.
 
-[SCREENSHOT PLACEHOLDER: Comparison of expected vs. observed MAC address sending the RST packets]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TCP%20Connection%20Resets%20%26%20Hijacking/1.png)
 
 ## 7. TCP Connection Hijacking
 
@@ -117,7 +116,8 @@ The key indicator identified was an excessive number of RST packets directed at 
 
 This capture was reviewed for signs of active TCP session hijacking, where an attacker spoofs the source address of a legitimate host and injects packets using predicted sequence numbers, while also working to block ACKs from reaching the real host (commonly paired with ARP poisoning).
 
-[SCREENSHOT PLACEHOLDER: Wireshark view showing injected packets with a spoofed source address and irregular sequence numbering]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TCP%20Connection%20Resets%20%26%20Hijacking/2.png)
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/TCP%20Connection%20Resets%20%26%20Hijacking/3.png)
 
 ## 8. ICMP Tunneling Detection
 
@@ -130,16 +130,12 @@ This exercise focused on detecting data exfiltration hidden inside the data fiel
 ```
 icmp
 ```
-
-[SCREENSHOT PLACEHOLDER: Wireshark view filtered to ICMP traffic, showing abnormal fragmentation]
-
 Normal ICMP request data length is small (around 48 bytes). In this capture, several ICMP requests showed an abnormally large data length (around 38,000 bytes), a clear indicator of ICMP tunneling being used to exfiltrate data disguised as ping traffic.
 
-[SCREENSHOT PLACEHOLDER: ICMP packet details showing the abnormal data length]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/ICMP%20Tunneling/1.png)
 
 Inspecting the data field of one of these packets directly in the Wireshark details pane revealed plaintext credentials being exfiltrated via ICMP.
-
-[SCREENSHOT PLACEHOLDER: Plaintext credentials visible in the ICMP data field]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/ICMP%20Tunneling/2.png)
 
 In a separate instance within the same capture, the exfiltrated value appeared encoded rather than plaintext. I copied this value out of Wireshark and decoded it on a Linux machine using base64:
 
@@ -149,7 +145,7 @@ echo 'VGhpcyBpcyBhIHNlY3VyZSBrZXk6IEtleTEyMzQ1Njc4OQo=' | base64 -d
 
 This decoded to reveal the exfiltrated secret value embedded in the ICMP traffic, confirming that an attacker had used ICMP as a covert channel for sensitive data, in this case credentials and secret key material.
 
-[SCREENSHOT PLACEHOLDER: Terminal output showing the decoded ICMP exfiltration data]
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/a96a11b4669066db3b1e78e8da7d42c182ef0664/Network%20Traffic%20Analysis/media/Detecting%20network%20abnormalities/ICMP%20Tunneling/3.png)
 
 ## Key Takeaways
 
