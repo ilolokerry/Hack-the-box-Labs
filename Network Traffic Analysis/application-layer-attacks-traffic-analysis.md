@@ -85,12 +85,10 @@ This exercise involved identifying outbound requests to an unrecognized external
 ```
 http
 ```
-
-[SCREENSHOT PLACEHOLDER: Wireshark view showing HTTP requests containing cookie/session values being sent to an unrecognized host]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/68566389b1473b1409590051a22ca8f513b6ffb1/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Cross-Site%20Scripting%20(XSS)%20%26%20Code%20Injection%20Detection/1.png)
 
 Following the relevant HTTP stream showed the values being exfiltrated (in this case, session cookies) being sent as URL parameters to an external listener, consistent with a classic XSS payload using `XMLHttpRequest` to exfiltrate `document.cookie`.
-
-[SCREENSHOT PLACEHOLDER: Follow HTTP Stream showing the exfiltration request containing cookie data]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/68566389b1473b1409590051a22ca8f513b6ffb1/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Cross-Site%20Scripting%20(XSS)%20%26%20Code%20Injection%20Detection/2.png)
 
 ## 4. SSL Renegotiation Attack Detection
 
@@ -103,12 +101,8 @@ This exercise focused on identifying SSL/TLS renegotiation abuse by inspecting t
 ```
 ssl.record.content_type == 22
 ```
-
-[SCREENSHOT PLACEHOLDER: Wireshark view filtered to handshake messages only]
-
 The key indicator identified was multiple Client Hello messages originating from the same client within a short time window, which is the clearest sign of a forced SSL renegotiation attempt (an attacker repeatedly triggering renegotiation in hopes of forcing a downgrade to a weaker cipher suite). I also reviewed the capture for out-of-order handshake messages, such as a Client Hello arriving after a handshake had already completed, which is another renegotiation indicator.
-
-[SCREENSHOT PLACEHOLDER: Multiple Client Hello messages from the same client]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/68566389b1473b1409590051a22ca8f513b6ffb1/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/SSL%20Renegotiation%20Attacks/2.png)
 
 ## 5. DNS Tunneling and Data Exfiltration Detection
 
@@ -119,8 +113,8 @@ The key indicator identified was multiple Client Hello messages originating from
 ```
 dns
 ```
-
-[SCREENSHOT PLACEHOLDER: DNS traffic view showing a high volume of TXT record queries from a single host]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/68566389b1473b1409590051a22ca8f513b6ffb1/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Peculiar%20DNS%20Traffic/1.png)
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/68566389b1473b1409590051a22ca8f513b6ffb1/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Peculiar%20DNS%20Traffic/2.png)
 
 An unusually high volume of TXT record queries and responses from a single host was identified as a strong indicator of DNS tunneling, since attackers commonly use the TXT field to carry exfiltrated data disguised as legitimate DNS traffic.
 
@@ -141,8 +135,7 @@ I decoded the value a second and third time to fully reveal the underlying data:
 ```bash
 echo 'VTBaU1EyVXhaSFprVjNocldETnNkbVJXT1cxaU0wb3pXVmhLYTFneU1XeFlNMUp2WVZoT1ptTklTbXhrU0ZJMVdETkNjMXBYUm5wYQpXREJMQ2c9PQo=' | base64 -d | base64 -d | base64 -d
 ```
-
-[SCREENSHOT PLACEHOLDER: Terminal output showing the multi-layer base64 decode chain]
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/68566389b1473b1409590051a22ca8f513b6ffb1/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Peculiar%20DNS%20Traffic/3.png)
 
 This exercise reinforced that exfiltrated data is often base64-encoded (sometimes multiple times) or fully encrypted, and that decoding alone may not always be sufficient if encryption has also been applied.
 
