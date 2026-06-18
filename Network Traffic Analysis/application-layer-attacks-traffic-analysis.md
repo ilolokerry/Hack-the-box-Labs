@@ -20,14 +20,14 @@ This exercise focused on identifying directory fuzzing attempts against a web se
 ```
 http
 ```
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d525cecb27c25cf080776e584bdf76effb725911/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/HTTPHTTPs%20Service%20Enumeration/1.png)
 
 **Filter to isolate only HTTP requests (removing server responses from view):**
 
 ```
 http.request
 ```
-
-[SCREENSHOT PLACEHOLDER: Wireshark view filtered to http.request showing rapid sequential requests]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d525cecb27c25cf080776e584bdf76effb725911/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/HTTPHTTPs%20Service%20Enumeration/2.png)
 
 The fuzzing attempt was identified by the presence of repeated requests to non-existent file paths in rapid succession, each returning a 404 response, which is a clear signature of automated directory/file brute-forcing.
 
@@ -36,12 +36,10 @@ The fuzzing attempt was identified by the presence of repeated requests to non-e
 ```
 http.request and ((ip.src_host == <suspected IP>) or (ip.dst_host == <suspected IP>))
 ```
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d525cecb27c25cf080776e584bdf76effb725911/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/HTTPHTTPs%20Service%20Enumeration/3.png)
 
-[SCREENSHOT PLACEHOLDER: Filtered traffic isolated to the suspected fuzzing source]
 
 I also used Wireshark's Follow HTTP Stream feature (right-click a request → Follow → HTTP Stream) to build a fuller picture of the requests being sent and the corresponding server responses.
-
-[SCREENSHOT PLACEHOLDER: Follow HTTP Stream output showing the fuzzing request/response pairs]
 
 ## 2. Strange HTTP Headers and Host Header Manipulation
 
@@ -52,14 +50,14 @@ I also used Wireshark's Follow HTTP Stream feature (right-click a request → Fo
 ```
 http
 ```
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d525cecb27c25cf080776e584bdf76effb725911/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Strange%20HTTP%20Headers/1.png)
 
 **Filter to find irregular Host headers (excluding the legitimate server's known IP):**
 
 ```
 http.request and (!(http.host == "192.168.10.7"))
 ```
-
-[SCREENSHOT PLACEHOLDER: Filtered results showing irregular Host header values, e.g. 127.0.0.1 or "admin"]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d525cecb27c25cf080776e584bdf76effb725911/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Strange%20HTTP%20Headers/2.png)
 
 This filter surfaced requests using unexpected Host header values, which can indicate an attacker attempting to manipulate virtual host routing to gain unauthorized access.
 
@@ -70,12 +68,11 @@ This filter surfaced requests using unexpected Host header values, which can ind
 ```
 http.response.code == 400
 ```
-
-[SCREENSHOT PLACEHOLDER: Filtered 400 response codes in Wireshark]
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d525cecb27c25cf080776e584bdf76effb725911/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Strange%20HTTP%20Headers/3.png)
 
 Following one of these streams (Follow → HTTP Stream) revealed a CRLF-injected request where the attacker embedded a second, smuggled HTTP request inside the first using encoded carriage-return/line-feed sequences (`%0d%0a`). Decoded, this revealed an attempt to route a second request to an internal-only resource (`127.0.0.1:8080`) that should not have been reachable externally.
 
-[SCREENSHOT PLACEHOLDER: Follow HTTP Stream showing the raw CRLF-injected request]
+![4](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d525cecb27c25cf080776e584bdf76effb725911/Network%20Traffic%20Analysis/media/Aplication%20layer%20attacks/Strange%20HTTP%20Headers/4.png)
 
 ## 3. Cross-Site Scripting (XSS) and Code Injection Detection
 
