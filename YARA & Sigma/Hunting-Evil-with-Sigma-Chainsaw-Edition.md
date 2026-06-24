@@ -97,24 +97,12 @@ level: low
 I ran this against `lab_events_3.evtx`, which contains 4688 events from real abnormally-long PowerShell commands:
  
 ```powershell
-PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARASigma\lab_events_3.evtx -s C:\Rules\sigma\proc_creation_win_powershell_abnormal_commandline_size.yml --mapping .\mappings\sigma-event-logs-all.yml
-```
- 
-[SCREENSHOT: Chainsaw output showing "0 Detections found" with the original mapping file]
- 
-Result: **0 detections.** At first that looked like the Sigma rule was broken — but the actual problem was the mapping file. Chainsaw's `sigma-event-logs-all.yml` mapping didn't have an entry for `NewProcessName`, so the field the rule depends on was never being matched against the raw event log at all.
- 
-This was the most important lesson of the whole section for me: **a Sigma rule failing to fire doesn't necessarily mean the rule is wrong — it might mean the tool running it doesn't know how to map the rule's fields to the actual log fields.** Sigma rules are meant to be portable across SIEMs, but that portability depends entirely on correct field mapping in whatever backend is consuming them.
- 
-Using a corrected mapping file (`sigma-event-logs-all-new.yml`, which included `NewProcessName`), I re-ran the same hunt:
- 
-```powershell
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARASigma\lab_events_3.evtx -s C:\Rules\sigma\proc_creation_win_powershell_abnormal_commandline_size.yml --mapping .\mappings\sigma-event-logs-all-new.yml
 ```
  
 [SCREENSHOT: Chainsaw output showing "3 Detections found on 3 documents" with the corrected mapping file, including the decoded PowerShell command lines]
  
-This time: **3 detections found on 3 documents.** All three flagged events contained heavily obfuscated PowerShell — Base64-encoded, GZip-compressed payloads being decoded and executed via `[scriptblock]::create(...)`, launched indirectly through `cmd.exe /b /c start /b /min powershell.exe`. Textbook fileless-malware staging behavior, and the rule (once properly mapped) caught all of it.
+ detections found on 3 documents.All three flagged events contained heavily obfuscated PowerShell — Base64-encoded, GZip-compressed payloads being decoded and executed via `[scriptblock]::create(...)`, launched indirectly through `cmd.exe /b /c start /b /min powershell.exe`. Textbook fileless-malware staging behavior, and the rule (once properly mapped) caught all of it.
  
 ### Practical Exercise — Hunting Defender Exclusions
  
