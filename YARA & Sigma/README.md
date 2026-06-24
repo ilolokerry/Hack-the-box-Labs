@@ -12,17 +12,10 @@ From there, the module pivots to Sigma — covering its rule structure, manual r
 
 ## What's in This Repo
 
-| Report | Section |
-|---|---|
-| [`Hunting-Evil-with-YARA-Windows-and-Linux.md`](./Hunting-Evil-with-YARA-Windows-and-Linux.md) | — |
-| [`Developing-YARA-Rules.md`](./Developing-YARA-Rules.md) | — |
-| [`Developing-Sigma-Rules.md`](./Developing-Sigma-Rules.md) | 8/11 |
-| [`Hunting-Evil-with-Sigma-Chainsaw-Edition.md`](./Hunting-Evil-with-Sigma-Chainsaw-Edition.md) | 9/11 |
-
-> 📸 Each report has placeholder spots marked `[SCREENSHOT: ...]` where a terminal/output screenshot would reinforce the write-up. Drop your actual lab screenshots into a `screenshots/` folder in this repo and swap the placeholders for real `![alt text](screenshots/filename.png)` image links.
-
-Each report follows a learning-log style — walking through what I did, the reasoning behind each Sigma/YARA rule, and what I took away from the exercise, rather than just dumping raw lab output.
-
+[`Developing-YARA-Rules.md`](./Developing-YARA-Rules.md)<br>
+[`Hunting-Evil-with-YARA-Windows-and-Linux.md`](./Hunting-Evil-with-YARA-Windows-and-Linux.md) <br>
+[`Developing-Sigma-Rules.md`](./Developing-Sigma-Rules.md) <br>
+[`Hunting-Evil-with-Sigma-Chainsaw-Edition.md`](./Hunting-Evil-with-Sigma-Chainsaw-Edition.md) <br>
 ## Module Conclusion
 
 Completing the YARA & Sigma for SOC Analysts module covered:
