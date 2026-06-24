@@ -30,6 +30,7 @@ I started by examining the sample in a hex editor (HxD) to confirm a previously 
 C:\crysis\Release\PDB\payload.pdb
 ```
 
+[SCREENSHOT: HxD hex view showing the `payload.pdb` and `sssssbsss` strings highlighted]
 Scrolling further through the hex dump, I spotted a second, fairly unique-looking string: `sssssbsss`.
 
 On Linux, the same bytes can be located without a GUI hex editor using `hexdump`:
@@ -39,14 +40,12 @@ hexdump dharma_sample.exe -C | grep crysis -n3
 hexdump dharma_sample.exe -C | grep sssssbsss -n3
 ```
 
-[SCREENSHOT: HxD hex view showing the `payload.pdb` and `sssssbsss` strings highlighted]
-
 **Building the rule** — I converted both strings into raw hex byte patterns and combined them into a single rule requiring both to match:
 
 ```yara
 rule ransomware_dharma {
     meta:
-        author      = "Madhukar Raina"
+        author      = "kerry"
         version     = "1.0"
         description = "Simple rule to detect strings from Dharma ransomware"
         reference   = "https://www.virustotal.com/gui/file/bff6a1000a86f8edf3673d576786ec75b80bed0c458a8ca0bd52d12b74099071/behavior"
@@ -62,9 +61,24 @@ rule ransomware_dharma {
 
 ```powershell
 yara64.exe -s C:\Rules\yara\dharma_ransomware.yar C:\Samples\YARASigma\ -r 2>null
-```
 
-[SCREENSHOT: terminal output showing the rule matching `dharma_sample.exe` and the disguised copies]
+PS C:\Users\htb-student> yara64.exe -s C:\Rules\yara\dharma_ransomware.yar C:\Samples\YARASigma\ -r 2>null
+ransomware_dharma C:\Samples\YARASigma\\dharma_sample.exe
+0xc814:$string_pdb: 43 3A 5C 63 72 79 73 69 73 5C 52 65 6C 65 61 73 65 5C 50 44 42 5C 70 61 79 6C 6F 61 64 2E 70 64 62
+0x16c10:$string_ssss: 73 73 73 73 73 62 73 73 73
+ransomware_dharma C:\Samples\YARASigma\\check_updates.exe
+0xc814:$string_pdb: 43 3A 5C 63 72 79 73 69 73 5C 52 65 6C 65 61 73 65 5C 50 44 42 5C 70 61 79 6C 6F 61 64 2E 70 64 62
+0x16c10:$string_ssss: 73 73 73 73 73 62 73 73 73
+ransomware_dharma C:\Samples\YARASigma\\microsoft.com
+0xc814:$string_pdb: 43 3A 5C 63 72 79 73 69 73 5C 52 65 6C 65 61 73 65 5C 50 44 42 5C 70 61 79 6C 6F 61 64 2E 70 64 62
+0x16c10:$string_ssss: 73 73 73 73 73 62 73 73 73
+ransomware_dharma C:\Samples\YARASigma\\KB5027505.exe
+0xc814:$string_pdb: 43 3A 5C 63 72 79 73 69 73 5C 52 65 6C 65 61 73 65 5C 50 44 42 5C 70 61 79 6C 6F 61 64 2E 70 64 62
+0x16c10:$string_ssss: 73 73 73 73 73 62 73 73 73
+ransomware_dharma C:\Samples\YARASigma\\pdf_reader.exe
+0xc814:$string_pdb: 43 3A 5C 63 72 79 73 69 73 5C 52 65 6C 65 61 73 65 5C 50 44 42 5C 70 61 79 6C 6F 61 64 2E 70 64 62
+0x16c10:$string_ssss: 73 73 73 73 73 62 73 73 73
+```
 
 **Result:** The rule didn't just flag `dharma_sample.exe` — it also caught several disguised copies sitting in the same directory under innocuous-looking names: `check_updates.exe`, `microsoft.com`, `KB5027505.exe`, and `pdf_reader.exe`. This was a good reminder of why pattern-based detection beats trusting filenames — malware authors lean on legitimate-sounding names to blend in, and a string/byte-pattern rule cuts straight through that.
 
@@ -98,10 +112,10 @@ rule meterpreter_reverse_tcp_shellcode {
 
 ```powershell
 PS C:\Samples\YARASigma> .\htb_sample_shell.exe
-[+] Parent process with PID 7972 is created : ...htb_sample_shell.exe
-[+] Child process with PID 9084 is created  : C:\Windows\System32\cmdkey.exe
+[+] Parent process with PID 6384 is created : ...htb_sample_shell.exe
+[+] Child process with PID 7800 is created  : C:\Windows\System32\cmdkey.exe
 [+] Shellcode is written at address 000002686B1C0000 in remote process cmdkey.exe
-[+] Remote thread to execute the shellcode is started with thread ID 368
+[+] Remote thread to execute the shellcode is started with thread ID 6308
 ```
 
 [SCREENSHOT: console output of `htb_sample_shell.exe` showing the injection into `cmdkey.exe`]
@@ -112,9 +126,9 @@ PS C:\Samples\YARASigma> .\htb_sample_shell.exe
 Get-Process | ForEach-Object { "Scanning with Yara for meterpreter shellcode on PID "+$_.id; & "yara64.exe" "C:\Rules\yara\meterpreter_shellcode.yar" $_.id }
 ```
 
-[SCREENSHOT: PowerShell output showing YARA matches on PID 7972 and PID 9084, plus the access-denied errors on protected PIDs]
+[SCREENSHOT: PowerShell output showing YARA matches on PID 6384 and PID 7800, plus the access-denied errors on protected PIDs]
 
-**Result:** Both the parent (`htb_sample_shell.exe`, PID 7972) and the injected child (`cmdkey.exe`, PID 9084) lit up as matches. A few system PIDs returned `can not attach to process (try running as root)` errors — expected, since those need elevated/protected-process privileges.
+**Result:** Both the parent (`htb_sample_shell.exe`, PID 6384) and the injected child (`cmdkey.exe`, PID 7800) lit up as matches. A few system PIDs returned `can not attach to process (try running as root)` errors — expected, since those need elevated/protected-process privileges.
 
 Drilling into the flagged PID with `--print-strings` confirmed the shellcode components living inside `cmdkey.exe`'s memory — `ws2_32.dll` references, the kernel32 checksum, WSAStartup/WSASocket checksums, and the `connect` checksum, all exactly where the rule expected them.
 
