@@ -1,7 +1,5 @@
 # Developing Sigma Rules
- 
-**Module:** YARA & Sigma for SOC Analysts (HTB Academy)
-**Section:** 8 / 11
+
  
 ## Objective
  
