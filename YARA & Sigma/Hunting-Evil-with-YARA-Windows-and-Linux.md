@@ -29,8 +29,9 @@ I started by examining the sample in a hex editor (HxD) to confirm a previously 
 ```
 C:\crysis\Release\PDB\payload.pdb
 ```
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20windows/1.png)
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20windows/2.png)
 
-[SCREENSHOT: HxD hex view showing the `payload.pdb` and `sssssbsss` strings highlighted]
 Scrolling further through the hex dump, I spotted a second, fairly unique-looking string: `sssssbsss`.
 
 On Linux, the same bytes can be located without a GUI hex editor using `hexdump`:
@@ -118,7 +119,7 @@ PS C:\Samples\YARASigma> .\htb_sample_shell.exe
 [+] Remote thread to execute the shellcode is started with thread ID 6308
 ```
 
-[SCREENSHOT: console output of `htb_sample_shell.exe` showing the injection into `cmdkey.exe`]
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20windows/3.png)
 
 **Scanning every running process** with a one-liner that pipes `Get-Process` into `yara64.exe`:
 
@@ -126,7 +127,7 @@ PS C:\Samples\YARASigma> .\htb_sample_shell.exe
 Get-Process | ForEach-Object { "Scanning with Yara for meterpreter shellcode on PID "+$_.id; & "yara64.exe" "C:\Rules\yara\meterpreter_shellcode.yar" $_.id }
 ```
 
-[SCREENSHOT: PowerShell output showing YARA matches on PID 6384 and PID 7800, plus the access-denied errors on protected PIDs]
+![4](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20windows/4.png)
 
 **Result:** Both the parent (`htb_sample_shell.exe`, PID 6384) and the injected child (`cmdkey.exe`, PID 7800) lit up as matches. A few system PIDs returned `can not attach to process (try running as root)` errors — expected, since those need elevated/protected-process privileges.
 
@@ -177,7 +178,8 @@ In a second terminal, I triggered the matching activity:
 Invoke-Command -ScriptBlock {Write-Host "Hello from PowerShell"}
 ```
 
-[SCREENSHOT: SilkETW JSON output / console showing the YARA match against `powershell_hello_world_yara`]
+![5](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20windows/5.0.png)
+![5.1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20windows/5.1.png)
 
 **Result:** SilkETW captured the event and reported a YARA match against `powershell_hello_world_yara` in real time. This is a small example, but the pattern generalizes well — swap the rule for something targeting AMSI bypass strings, obfuscated `IEX` chains, or known offensive-tooling cmdlets, and you've got a lightweight real-time PowerShell abuse detector.
 
@@ -200,8 +202,7 @@ The scenario here is the realistic SOC case: you don't always get hands-on acces
 yara /home/htb-student/Rules/yara/wannacry_artifacts_memory.yar \
      /home/htb-student/MemoryDumps/compromised_system.raw --print-strings
 ```
-
-[SCREENSHOT: terminal output of the YARA scan showing WannaCry string hits in the memory image]
+![6](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20linux/6.png)
 
 This surfaced dozens of hits for known WannaCry artifacts scattered throughout memory: `tasksche.exe`, `mssecsvc.exe`, `diskpart.exe`, and the infamous kill-switch domain `www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com`.
 
@@ -212,7 +213,7 @@ This surfaced dozens of hits for known WannaCry artifacts scattered throughout m
 ```bash
 vol.py -f compromised_system.raw yarascan -U "www.iuqerfsodp9ifjaposdfjhgosurijfaewrwergwea.com"
 ```
-
+![7](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20linux/7.png)
 *Full rule-file scan* using a proper multi-string rule:
 
 ```yara
@@ -236,8 +237,7 @@ rule Ransomware_WannaCry {
 ```bash
 vol.py -f compromised_system.raw yarascan -y /home/htb-student/Rules/yara/wannacry_artifacts_memory.yar
 ```
-
-[SCREENSHOT: Volatility `yarascan` output showing matches attributed to `svchost.exe`, PID 1576]
+![7.1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/74db66ae0fe14718d12dd9131e54f33d0d7e95bc/YARA%20%26%20Sigma/media/yara/hunting%20evil%20with%20yara%20in%20linux/7.1.png)
 
 **Result:** Volatility consistently attributed every match to **`svchost.exe`, PID 1576** — pinpointing exactly which process in memory was carrying the WannaCry indicators, which is far more actionable for an analyst than a flat "found somewhere in this 4GB image" result.
 
@@ -252,9 +252,4 @@ vol.py -f compromised_system.raw yarascan -y /home/htb-student/Rules/yara/wannac
 - Combining YARA with ETW (via SilkETW) turns it into a near-real-time detection layer, not just a static/forensic tool.
 - Memory forensics + YARA (directly or through Volatility's `yarascan`) lets you attribute IOCs to a specific process, which is critical for scoping an incident.
 
-## References
 
-- [Cuckoo Sandbox community YARA rules](https://github.com/cuckoosandbox/community/blob/master/data/yara/shellcode/metasploit.yar)
-- [SilkETW (FuzzySec)](https://github.com/fireeye/SilkETW)
-- Microsoft ETW documentation
-- HTB Academy — *YARA & Sigma for SOC Analysts*
