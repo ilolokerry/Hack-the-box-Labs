@@ -28,7 +28,7 @@ Started with the most basic analysis step — running `strings` on the sample:
 strings svchost.exe
 ```
 
-[SCREENSHOT: terminal output of `strings svchost.exe` highlighting the UPX0/UPX1/UPX2/UPX! markers]
+![1](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d7ef3a7921bda088fcf209a3d83342e8f955cb73/YARA%20%26%20Sigma/media/yara/Developing%20YARA%20Rules/1.png)
 
 The output immediately gave it away: `UPX0`, `UPX1`, `UPX2`, and `UPX!` markers — clear signs the binary is packed with the **UPX (Ultimate Packer for eXecutables)** packer.
 
@@ -77,7 +77,7 @@ python yarGen.py --update      # downloads ~913MB of goodware string/opcode DBs
 python3 yarGen.py -m /home/htb-student/temp -o htb_sample.yar
 ```
 
-[SCREENSHOT: terminal output of yarGen processing the sample and writing the generated rule]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d7ef3a7921bda088fcf209a3d83342e8f955cb73/YARA%20%26%20Sigma/media/yara/Developing%20YARA%20Rules/2.png)
 
 yarGen loaded its goodware databases (millions of known-benign strings/imphashes/exports), processed the sample, and produced a single rule:
 
@@ -100,14 +100,7 @@ rule dharma_sample {
         1 of ($x*) and 4 of them
 }
 ```
-
-**Validation** against the sample repository:
-
-```bash
-yara htb_sample.yar /home/htb-student/Samples/YARASigma
-```
-
-[SCREENSHOT: terminal output showing the generated rule matching `dharma_sample.exe` and its disguised copies]
+![2.2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/d7ef3a7921bda088fcf209a3d83342e8f955cb73/YARA%20%26%20Sigma/media/yara/Developing%20YARA%20Rules/2.1.png)
 
 **Result:** matched `dharma_sample.exe` plus the same four disguised copies seen earlier (`pdf_reader.exe`, `microsoft.com`, `check_updates.exe`, `KB5027505.exe`) — confirming the auto-generated rule was just as effective as the manually-crafted one from the previous report, with far less manual string-picking effort.
 
