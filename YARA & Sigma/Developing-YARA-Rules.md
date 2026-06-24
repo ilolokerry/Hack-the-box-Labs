@@ -115,11 +115,9 @@ yara htb_sample.yar /home/htb-student/Samples/YARASigma
 
 ---
 
-## Part 3 — Manual Rule Development, Example 1: ZoxPNG RAT (APT17)
+## Part 3 — Manual Rule Development: ZoxPNG RAT (APT17)
 
 **Sample:** `legit.exe` (deliberately misleading filename)
-
-This time I built a rule from scratch using multiple intelligence sources, not just raw strings:
 
 1. **String analysis** — `strings legit.exe` revealed network/HTTP indicators (`InternetOpenA`, `HttpSendRequestA`, a suspicious hardcoded Google-image-search-style URL used for C2 disguise, `Cookie: SESSIONID=%s`, staged `Step 1`–`Step 11` markers, and a specific spoofed User-Agent string).
 2. **Public threat intel** — a write-up from Intezer on this ZoxPNG variant.
@@ -130,8 +128,6 @@ This time I built a rule from scratch using multiple intelligence sources, not j
 python3 imphash_calc.py /home/htb-student/Samples/YARASigma/legit.exe
 # 414bbd566b700ea021cfae3ad8f4d9b9
 ```
-
-[SCREENSHOT: terminal output of the imphash calculation script]
 
 **Resulting rule** (`apt_apt17_mal_sep17_2.yar`, originally by Florian Roth):
 
@@ -144,6 +140,9 @@ rule APT17_Malware_Oct17_Gen {
         author      = "Florian Roth (Nextron Systems)"
         reference   = "https://goo.gl/puVc9q"
         date        = "2017-10-03"
+       hash1 = "0375b4216334c85a4b29441a3d37e61d7797c2e1cb94b14cf6292449fb25c7b2"
+      hash2 = "07f93e49c7015b68e2542fc591ad2b4a1bc01349f79d48db67c53938ad4b525d"
+      hash3 = "ee362a8161bd442073775363bf5fa1305abac2ce39b903d63df0d7121ba60550"
     strings:
         $x1 = "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NETCLR 2.0.50727)" fullword ascii
         $x2 = "http://%s/imgres?q=A380&hl=en-US&sa=X&biw=1440&bih=809&tbm=isus&tbnid=aLW4-J8Q1lmYBM" ascii
@@ -170,77 +169,13 @@ rule APT17_Malware_Oct17_Gen {
 
 ---
 
-## Part 4 — Manual Rule Development, Example 2: Neuron (Turla)
-
-**Sample:** `Microsoft.Exchange.Service.exe` (again, a deliberately legitimate-sounding name)
-
-Since the NCSC UK report on this malware confirmed both the Neuron client and service are **.NET** binaries, plain `strings` output wouldn't show much beyond surface-level text. Instead, I used `monodis` to decompile the assembly's IL code:
-
-```bash
-monodis --output=code Microsoft.Exchange.Service.exe
-cat code
-```
-
-[SCREENSHOT: terminal output of the decompiled IL code showing `Utils.Storage::ExecCMD` and related class/method names]
-
-This surfaced .NET class and method names directly from the IL — things like `Utils.Storage::ExecCMD`, `Utils.Crypt::EncryptScript`, and `Storage::KillOldThread` — effectively reverse-engineering the malware's internal structure without needing a full debugger session (though the report notes a tool like **dnSpy** would give a richer view for deeper analysis).
-
-**Resulting rule** (`neuron_1.yar`, by NCSC UK):
-
-```yara
-rule neuron_functions_classes_and_vars {
-    meta:
-        description = "Rule for detection of Neuron based on .NET functions and class names"
-        author      = "NCSC UK"
-        reference   = "https://www.ncsc.gov.uk/file/2691/download?token=RzXWTuAB"
-        reference2  = "https://www.ncsc.gov.uk/alerts/turla-group-malware"
-    strings:
-        $class1 = "StorageUtils" ascii
-        $class2 = "WebServer" ascii
-        $class3 = "StorageFile" ascii
-        $class4 = "StorageScript" ascii
-        $class5 = "ServerConfig" ascii
-        $class6 = "CommandScript" ascii
-        $class7 = "MSExchangeService" ascii
-        $class8 = "W3WPDIAG" ascii
-        $func1  = "AddConfigAsString" ascii
-        $func2  = "DelConfigAsString" ascii
-        $func3  = "GetConfigAsString" ascii
-        $func4  = "EncryptScript" ascii
-        $func5  = "ExecCMD" ascii
-        $func6  = "KillOldThread" ascii
-        $func7  = "FindSPath" ascii
-        $dotnetMagic = "BSJB" ascii
-    condition:
-        (uint16(0) == 0x5A4D and uint16(uint32(0x3c)) == 0x4550) and $dotnetMagic and 6 of them
-}
-```
-
-**Breaking down the condition logic:**
-- `uint16(0) == 0x5A4D` confirms the `MZ` PE magic bytes at the start of the file.
-- `uint16(uint32(0x3c)) == 0x4550` follows the pointer at offset `0x3c` (the standard location of the PE header offset) and checks for the `PE` signature there — a more rigorous PE-format validity check than the MZ check alone.
-- `$dotnetMagic == "BSJB"` confirms the file is specifically a **.NET assembly** (this signature lives in the CLI header).
-- `6 of them` requires six of the fifteen class/function name strings — giving tolerance for partial obfuscation or renaming while still requiring strong cumulative evidence.
-
----
-
-## Closing Exercise — Adapting an Existing Rule
-
-The module closed with a practical exercise: take the `apt_apt17_mal_sep17_1.yar` rule (built around a placeholder `X.dll`) and adapt it to correctly fingerprint a *different* sample, `DirectX.dll`, by identifying the correct legitimate-looking DLL name the malware impersonates.
-
-**Answer identified:** `TSMSISrv.dll`
-
-This drove home a recurring theme across this whole module: threat actors lean heavily on **typosquatting/impersonation of legitimate system or vendor DLL names** (`DirectX.dll` mimicking a real Windows component) to blend into a system's process and file listings, and a well-built YARA rule needs to account for that exact naming trick rather than just generic "looks suspicious" heuristics.
-
----
 
 ## Key Takeaways
 
-- Manual rule-building starts with the basics — `strings`, hex inspection — but gets much stronger when combined with external threat intel, imphash, and (for .NET) IL-level reversing via `monodis`/dnSpy.
-- **yarGen** is a genuinely useful accelerator for rule creation, but generated rules are a starting point, not a finished product — they need human review before being trusted in a production detection pipeline.
-- Strong rules layer multiple signal types (PE imphash + unique strings + format checks) so a single changed string in a malware variant doesn't blow the detection.
-- Malware authors consistently disguise files using legitimate-sounding names (`legit.exe`, `Microsoft.Exchange.Service.exe`, `DirectX.dll`) — which is exactly why byte/string/structure-based detection (YARA) matters more than filename-based triage.
-
+-You don't need fancy tools to start — strings and a hex editor can already crack open a sample's identity. <br>
+-yarGen is great for speeding things up, but the rules it generates still need a human to review and clean them before trusting them in production.<br>
+-The best rules don't rely on just one clue — combining strings, imphash, and file checks makes a rule harder to dodge.<br>
+-Malware loves hiding behind normal-sounding names like legit.exe or DirectX.dll, which is exactly why YARA looks at the actual content instead of the filename.<br>
 ## References
 
 - [yarGen (Florian Roth / Neo23x0)](https://github.com/Neo23x0/yarGen)
