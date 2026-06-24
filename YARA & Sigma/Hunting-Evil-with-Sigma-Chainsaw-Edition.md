@@ -20,8 +20,6 @@ First step was just running the help menu to see what Chainsaw can do:
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe -h
 ```
  
-[SCREENSHOT: Chainsaw `-h` help menu and banner]
- 
 The commands that matter most for hunting:
  
 | Command | Purpose |
@@ -31,16 +29,6 @@ The commands that matter most for hunting:
 | `lint` | Validate that rules load correctly before using them |
 | `dump` | Convert artifacts to a different format |
  
-A couple of example syntaxes from the help output that I expect to reuse a lot:
- 
-```bash
-./chainsaw hunt evtx_attack_samples/ -s sigma/ --mapping mappings/sigma-event-logs-all.yml -r rules/
-./chainsaw search mimikatz -i evtx_attack_samples/
-./chainsaw search -t 'Event.System.EventID: =4104' evtx_attack_samples/
-```
- 
-The `-s` flag points Chainsaw at a Sigma rule (or a directory of them), and `--mapping` tells it which field names in the raw event log correspond to the field names the Sigma rule expects.
- 
 ### Example 1 — Multiple Failed Logins From a Single Source
  
 I ran the Sigma rule built in the previous section (`win_security_susp_failed_logons_single_source2.yml`) against `lab_events_2.evtx`, which contains a batch of failed NTLM logon attempts against a `NOUSER` account:
@@ -48,8 +36,7 @@ I ran the Sigma rule built in the previous section (`win_security_susp_failed_lo
 ```powershell
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARASigma\lab_events_2.evtx -s C:\Rules\sigma\win_security_susp_failed_logons_single_source2.yml --mapping .\mappings\sigma-event-logs-all.yml
 ```
- 
-[SCREENSHOT: Chainsaw output table showing 5 flagged failed NTLM logins against `NOUSER`]
+ ![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c7c698233e0dcb0f8e7567a9f9fd9270b663bf1c/YARA%20%26%20Sigma/media/sigma/hunting%20evil%20with%20sigma%20%2C%20chainsaw/1.png)
  
 Chainsaw loaded the rule, scanned the file, and returned a clean detection table — it correctly flagged 5 failed NTLM logins against `NOUSER` from the same workstation (`FS01`). This confirmed the rule from the previous section actually fires correctly when run through a dedicated hunting tool, not just a manual PowerShell filter.
  
@@ -100,7 +87,8 @@ I ran this against `lab_events_3.evtx`, which contains 4688 events from real abn
 PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARASigma\lab_events_3.evtx -s C:\Rules\sigma\proc_creation_win_powershell_abnormal_commandline_size.yml --mapping .\mappings\sigma-event-logs-all-new.yml
 ```
  
-[SCREENSHOT: Chainsaw output showing "3 Detections found on 3 documents" with the corrected mapping file, including the decoded PowerShell command lines]
+![2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c7c698233e0dcb0f8e7567a9f9fd9270b663bf1c/YARA%20%26%20Sigma/media/sigma/hunting%20evil%20with%20sigma%20%2C%20chainsaw/2.png)
+![2.2](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c7c698233e0dcb0f8e7567a9f9fd9270b663bf1c/YARA%20%26%20Sigma/media/sigma/hunting%20evil%20with%20sigma%20%2C%20chainsaw/2.2.png)
  
  detections found on 3 documents.All three flagged events contained heavily obfuscated PowerShell — Base64-encoded, GZip-compressed payloads being decoded and executed via `[scriptblock]::create(...)`, launched indirectly through `cmd.exe /b /c start /b /min powershell.exe`. Textbook fileless-malware staging behavior, and the rule (once properly mapped) caught all of it.
  
@@ -108,14 +96,13 @@ PS C:\Tools\chainsaw> .\chainsaw_x86_64-pc-windows-msvc.exe hunt C:\Events\YARAS
  
 The section closed with a hands-on check: using the Sigma rule `posh_ps_win_defender_exclusions_added.yml` against `lab_events_5.evtx` to find a suspicious Windows Defender exclusion path that had been added — a common defense-evasion technique where malware adds its own staging directory to Defender's exclusion list so it can operate undetected. Running the hunt surfaced the excluded directory directly in the Sigma rule's match output.
  
-[SCREENSHOT: Chainsaw hunt output showing the detected Defender exclusion path]
- 
+![3](https://github.com/ilolokerry/Hack-the-box-Labs/blob/c7c698233e0dcb0f8e7567a9f9fd9270b663bf1c/YARA%20%26%20Sigma/media/sigma/hunting%20evil%20with%20sigma%20%2C%20chainsaw/3.png?)
+
 ## Key Takeaways
- 
-- Chainsaw lets you apply real Sigma logic against raw `.evtx` files without needing a SIEM pipeline — genuinely useful for fast, on-the-spot triage during an investigation.
-- Mapping files matter just as much as the rule itself. A "0 detections" result is not proof a rule is broken — it's a prompt to check whether the tool is actually reading the fields the rule depends on.
-- Multi-file, multi-rule hunts (`-s` pointed at a directory) make Chainsaw scale well beyond single-file manual checks, which is the whole point when you're dealing with a pile of logs and limited time.
-- Obfuscated/encoded PowerShell command lines are a strong, fairly reliable signal once you can detect on length + executable + content — this is a pattern I'll be looking for again outside of this lab.
+ - Chainsaw lets you run real Sigma rules against log files directly, no SIEM needed — great for fast checks.
+- The same rule can work across different tools, which is why Sigma is built to be reusable, not tied to one system.
+- Always test a rule against a real log file to confirm it works, instead of just trusting that the YAML looks correct.
+Small details, like which field a rule checks or what counts as "suspicious," can decide whether an attack gets caught or missed.
 ## Conclusion
  
 This section reinforced that Sigma rules are only half the story — the tool you run them through, and how that tool maps fields, determines whether your detection logic actually works in practice. Getting a rule to silently fail (0 detections) and having to debug *why* was a more valuable exercise than if everything had just worked first try — it's exactly the kind of troubleshooting I'd expect to run into doing real SIEM/EDR tuning work.
