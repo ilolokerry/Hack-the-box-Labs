@@ -51,20 +51,4 @@ This project is built on hands-on labs and simulated attack scenarios to replica
 
 ---
 
-## Repository Structure (Planned)
-
-```text
-HTB-SOC-Path/
-│
-├── 01
-
-```
-
----
-
-##  Progress Tracking
-
-This repository will be continuously updated as I complete labs, document findings, and build practical cybersecurity skills aligned with SOC analyst roles.
-
----
 
